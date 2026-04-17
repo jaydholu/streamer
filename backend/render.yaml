@@ -1,0 +1,27 @@
+# render.yaml — Blueprint for Render deployment
+# Docs: https://docs.render.com/blueprint-spec
+
+services:
+  - type: web
+    name: streamer-api
+    runtime: python
+    region: oregon   # US — no TMDB blocking
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+      - key: MONGODB_URI
+        sync: false      # Set manually in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: TMDB_API_KEY
+        sync: false      # Set manually in Render dashboard
+      - key: CORS_ORIGINS
+        sync: false      # Set to your frontend URL after deploy
+      - key: FRONTEND_URL
+        sync: false
+    healthCheckPath: /health
