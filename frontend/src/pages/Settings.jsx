@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   AlertTriangle,
@@ -22,12 +22,20 @@ export default function SettingsPage() {
   const { addToast } = useToast();
   const navigate = useNavigate();
 
+  const [account, setAccount] = useState(null);
+
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
   const [pwLoading, setPwLoading] = useState(false);
 
   const [deleteModal, setDeleteModal] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
   const [delLoading, setDelLoading] = useState(false);
+
+  useEffect(() => {
+    authAPI.getMe()
+      .then(({ data }) => setAccount(data))
+      .catch(() => {});
+  }, []);
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -88,19 +96,28 @@ export default function SettingsPage() {
 
         {/* Account Info */}
         <Section icon={UserIcon} title="Account">
+          <Row label="Full Name">
+            {account?.fullname || '—'}
+          </Row>
+          <Row label="Username">
+            {account?.username || '—'}
+          </Row>
+          <Row label="Email">
+            {account?.email || '—'}
+          </Row>
           <Row label="Role">
             <span
               className="px-2.5 py-0.5 text-xs font-semibold rounded-full capitalize"
               style={{
                 background:
-                  user?.role === 'admin'
+                  (account?.role || user?.role) === 'admin'
                     ? 'var(--c-accent-muted)'
                     : 'var(--c-hover)',
                 color:
-                  user?.role === 'admin' ? 'var(--c-accent)' : 'var(--c-sub)',
+                  (account?.role || user?.role) === 'admin' ? 'var(--c-accent)' : 'var(--c-sub)',
               }}
             >
-              {user?.role || 'member'}
+              {account?.role || user?.role || 'member'}
             </span>
           </Row>
         </Section>

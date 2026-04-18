@@ -10,7 +10,6 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 function findTokenStorage() {
   if (localStorage.getItem('access_token')) return localStorage;
   if (sessionStorage.getItem('access_token')) return sessionStorage;
-  // Check refresh token too (access may have been cleared but refresh still exists)
   if (localStorage.getItem('refresh_token')) return localStorage;
   if (sessionStorage.getItem('refresh_token')) return sessionStorage;
   return null;
@@ -154,6 +153,7 @@ export function AuthProvider({ children }) {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
+  if (!context)
+    throw new Error('useAuth must be used within AuthProvider');
   return context;
 };

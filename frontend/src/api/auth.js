@@ -1,6 +1,7 @@
 import api from './client';
 
 export const authAPI = {
+  getMe: () => api.get('/auth/me'),
   signup: (data) => api.post('/auth/signup', data),
   signin: (data) => api.post('/auth/signin', data),
   refresh: (refreshToken) => api.post('/auth/refresh', { refresh_token: refreshToken }),
