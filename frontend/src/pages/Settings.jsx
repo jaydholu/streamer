@@ -95,7 +95,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Account Info */}
-        <Section icon={UserIcon} title="Account">
+        <Section icon={UserIcon} title="Account Holder Information">
           <Row label="Full Name">
             {account?.fullname || '—'}
           </Row>
