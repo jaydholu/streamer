@@ -62,3 +62,13 @@ class MessageResponse(BaseModel):
 class ChangePasswordRequest(BaseModel):
     current_password: str = Field(..., min_length=1)
     new_password: str = Field(..., min_length=6, max_length=128)
+
+
+# ── User Info ───────────────────────────────────────────────
+
+class UserMeResponse(BaseModel):
+    id: str
+    fullname: str
+    username: str
+    email: str
+    role: str

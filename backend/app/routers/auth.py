@@ -13,12 +13,25 @@ from app.schemas.auth import (
     ResetPasswordRequest,
     ChangePasswordRequest,
     MessageResponse,
+    UserMeResponse,
 )
 from app.services import auth_service
 from app.utils.dependencies import get_current_user
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
+
+
+@router.get("/me", response_model=UserMeResponse)
+async def get_me(current_user: dict = Depends(get_current_user)):
+    """Get current user's account info."""
+    return {
+        "id": current_user["id"],
+        "fullname": current_user["fullname"],
+        "username": current_user["username"],
+        "email": current_user["email"],
+        "role": current_user["role"],
+    }
 
 
 @router.post("/signup", response_model=SignUpResponse, status_code=201)
