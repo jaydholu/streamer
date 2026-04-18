@@ -33,7 +33,7 @@ export default function AvatarPicker({
                 if (!isUsed) onChange(id);
               }}
               disabled={isUsed}
-              className="relative aspect-square rounded-xl overflow-hidden transition-all duration-200 cursor-pointer focus-ring group"
+              className="relative aspect-square rounded-2xl overflow-hidden transition-all duration-200 cursor-pointer focus-ring group"
               style={{
                 border: isSelected
                   ? '3px solid var(--c-accent)'

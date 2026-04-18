@@ -135,7 +135,7 @@ export default function ManageProfilesPage() {
       <div className="max-w-2xl mx-auto px-4 py-10 page-enter">
         <div className="mb-10">
           <p
-            className="text-xs font-bold tracking-[0.3em] uppercase mb-2"
+            className="text-sm font-bold tracking-[0.3em] uppercase mb-2"
             style={{ color: 'var(--c-accent)' }}
           >
             Profile Management
@@ -175,7 +175,7 @@ export default function ManageProfilesPage() {
               <div className="flex-1 min-w-0">
                 <p
                   className="font-semibold truncate"
-                  style={{ color: 'var(--c-text)', fontSize: 15 }}
+                  style={{ color: 'var(--c-text)', fontSize: 18 }}
                 >
                   {profile.name}
                 </p>
@@ -274,7 +274,7 @@ export default function ManageProfilesPage() {
           usedAvatars={usedAvatars}
           columns={5}
         />
-        <div className="flex gap-3 justify-end mt-5">
+        <div className="flex gap-3 justify-end mt-6">
           <Button variant="secondary" onClick={() => setCreateModal(false)}>Cancel</Button>
           <Button loading={loading} onClick={handleCreate}>Create</Button>
         </div>
@@ -300,16 +300,9 @@ export default function ManageProfilesPage() {
           usedAvatars={usedAvatars}
           columns={5}
         />
-        <div className="flex gap-3 justify-end">
-          <Button
-            variant="secondary"
-            onClick={() => setEditModal({ open: false, profile: null })}
-          >
-            Cancel
-          </Button>
-          <Button loading={loading} onClick={handleEdit}>
-            Save
-          </Button>
+        <div className="flex gap-3 justify-end mt-6">
+          <Button variant="secondary" onClick={() => setEditModal({ open: false, profile: null })}>Cancel</Button>
+          <Button loading={loading} onClick={handleEdit}>Save</Button>
         </div>
       </Modal>
 

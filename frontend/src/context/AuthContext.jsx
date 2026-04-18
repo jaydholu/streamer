@@ -1,50 +1,95 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authAPI } from '../api/auth';
+import axios from 'axios';
 
 const AuthContext = createContext(null);
 
-// Helper: get storage based on remember preference
-function getStorage() {
-  return localStorage.getItem('remember_me') === 'true' ? localStorage : sessionStorage;
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+
+// Helper: find which storage has the tokens
+function findTokenStorage() {
+  if (localStorage.getItem('access_token')) return localStorage;
+  if (sessionStorage.getItem('access_token')) return sessionStorage;
+  // Check refresh token too (access may have been cleared but refresh still exists)
+  if (localStorage.getItem('refresh_token')) return localStorage;
+  if (sessionStorage.getItem('refresh_token')) return sessionStorage;
+  return null;
+}
+
+function clearAllAuth() {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  localStorage.removeItem('user');
+  sessionStorage.removeItem('access_token');
+  sessionStorage.removeItem('refresh_token');
+  sessionStorage.removeItem('user');
 }
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check for existing session on mount — check BOTH storages
+  // Check for existing session on mount — attempt refresh if access token expired
   useEffect(() => {
-    let token = localStorage.getItem('access_token');
-    let savedUser = localStorage.getItem('user');
+    let cancelled = false;
 
-    // If not in localStorage, check sessionStorage
-    if (!token) {
-      token = sessionStorage.getItem('access_token');
-      savedUser = sessionStorage.getItem('user');
-    }
-
-    if (token && savedUser) {
-      try {
-        // Verify token isn't expired
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const expiry = payload.exp * 1000;
-        if (Date.now() < expiry) {
-          setUser(JSON.parse(savedUser));
-        } else {
-          // Token expired — clear everything
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
-          localStorage.removeItem('user');
-          sessionStorage.clear();
-        }
-      } catch {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('user');
-        sessionStorage.clear();
+    async function restoreSession() {
+      const storage = findTokenStorage();
+      if (!storage) {
+        setLoading(false);
+        return;
       }
+
+      const token = storage.getItem('access_token');
+      const savedUser = storage.getItem('user');
+      const refreshToken = storage.getItem('refresh_token');
+
+      // If we have a valid (non-expired) access token, use it
+      if (token && savedUser) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          const expiry = payload.exp * 1000;
+          if (Date.now() < expiry) {
+            if (!cancelled) setUser(JSON.parse(savedUser));
+            if (!cancelled) setLoading(false);
+            return;
+          }
+        } catch {
+          // Token malformed — fall through to refresh attempt
+        }
+      }
+
+      // Access token missing or expired — try refreshing with the refresh token
+      if (refreshToken) {
+        try {
+          const { data } = await axios.post(`${API_URL}/auth/refresh`, {
+            refresh_token: refreshToken,
+          });
+
+          // Store new tokens in the same storage
+          storage.setItem('access_token', data.access_token);
+          storage.setItem('refresh_token', data.refresh_token);
+
+          // Decode new access token for user info
+          const payload = JSON.parse(atob(data.access_token.split('.')[1]));
+          const userData = { id: payload.sub, role: payload.role };
+          storage.setItem('user', JSON.stringify(userData));
+
+          if (!cancelled) setUser(userData);
+          if (!cancelled) setLoading(false);
+          return;
+        } catch {
+          // Refresh token also expired/invalid — clear everything
+        }
+      }
+
+      // No valid tokens — clean up
+      clearAllAuth();
+      if (!cancelled) setLoading(false);
     }
-    setLoading(false);
+
+    restoreSession();
+    return () => { cancelled = true; };
   }, []);
 
   const signin = useCallback(async (login, password, rememberMe = false) => {
@@ -85,11 +130,9 @@ export function AuthProvider({ children }) {
 
   const signout = useCallback(() => {
     authAPI.signout().catch(() => {});
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user');
+    clearAllAuth();
     localStorage.removeItem('active_profile');
-    sessionStorage.clear();
+    localStorage.removeItem('remember_me');
     setUser(null);
   }, []);
 

@@ -4,14 +4,27 @@ import { useAuth } from './AuthContext';
 
 const ProfileContext = createContext(null);
 
+// Restore active profile from localStorage immediately to avoid avatar flash
+function getSavedProfile() {
+  try {
+    const saved = localStorage.getItem('active_profile');
+    return saved ? JSON.parse(saved) : null;
+  } catch {
+    localStorage.removeItem('active_profile');
+    return null;
+  }
+}
+
 export function ProfileProvider({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const [profiles, setProfiles] = useState([]);
-  const [activeProfile, setActiveProfile] = useState(null);
+  const [activeProfile, setActiveProfile] = useState(getSavedProfile);
   const [loading, setLoading] = useState(false);
 
-  // Load profiles when authenticated
+  // Load profiles when authenticated — but wait for auth to finish loading first
   useEffect(() => {
+    if (authLoading) return; // Don't react until auth state is settled
+
     if (isAuthenticated) {
       fetchProfiles();
     } else {
@@ -19,18 +32,16 @@ export function ProfileProvider({ children }) {
       setActiveProfile(null);
       localStorage.removeItem('active_profile');
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, authLoading]);
 
-  // Restore active profile from localStorage
+  // Sync active profile with fresh server data once profiles load
   useEffect(() => {
-    const saved = localStorage.getItem('active_profile');
-    if (saved && profiles.length > 0) {
-      try {
-        const parsed = JSON.parse(saved);
-        const found = profiles.find((p) => p.id === parsed.id);
-        if (found) setActiveProfile(found);
-      } catch {
-        localStorage.removeItem('active_profile');
+    if (profiles.length > 0 && activeProfile) {
+      const found = profiles.find((p) => p.id === activeProfile.id);
+      if (found) {
+        // Update with latest server data (name/avatar may have changed)
+        setActiveProfile(found);
+        localStorage.setItem('active_profile', JSON.stringify(found));
       }
     }
   }, [profiles]);
