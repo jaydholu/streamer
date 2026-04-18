@@ -40,17 +40,19 @@ export function ToastProvider({ children }) {
           return (
             <div
               key={toast.id}
-              className="pointer-events-auto flex items-start gap-3 px-4 py-3.5 rounded-xl animate-slide-in min-w-[280px] max-w-[400px] glass-strong"
+              className="pointer-events-auto flex items-start gap-3 px-4 py-3.5 rounded-xl animate-slide-in min-w-[200px] max-w-[400px] glass-strong"
               style={{
                 borderLeft: `6px solid ${COLORS[toast.type]}`,
+                borderRight: `6px solid ${COLORS[toast.type]}`,
                 boxShadow: 'var(--shadow-lg)',
+                backgroundColor: 'var(--c-surface)',
               }}
             >
               <Icon
                 size={18}
                 style={{ color: COLORS[toast.type], flexShrink: 0, marginTop: 1 }}
               />
-              <p className="text-sm flex-1 leading-snug" style={{ color: 'var(--c-text)' }}>
+              <p className="text-sm flex-1 leading-snug" style={{ color: COLORS[toast.type] }}>
                 {toast.message}
               </p>
               <button
