@@ -22,7 +22,7 @@ const FEATURES = [
   {
     icon: Film,
     title: 'Resume Anywhere',
-    desc: 'Continue where you left off — every device, every time.',
+    desc: 'Continue where you left off - every device, every time.',
   },
   {
     icon: Bookmark,
@@ -32,7 +32,7 @@ const FEATURES = [
   {
     icon: Shield,
     title: 'Invite Only',
-    desc: 'Private by design. No public signups — ever.',
+    desc: 'Private by design. No public signups - ever.',
   },
 ];
 
@@ -134,11 +134,11 @@ export default function LandingPage() {
             color: 'var(--c-text)',
           }}
         >
-          Our movies.
+          Your movies.
           <br />
           <span className="text-gradient-brand">Your people.</span>
           <br />
-          Us cinema.
+          Your cinema.
         </h1>
 
         {/* Subheadline */}
@@ -146,7 +146,7 @@ export default function LandingPage() {
           className="animate-fade-in stagger-2 mt-8 max-w-xl leading-relaxed text-balance"
           style={{ color: 'var(--c-sub)', fontSize: 'clamp(15px, 2vw, 17px)' }}
         >
-          A private streaming space for you and your circle. Browse thousands of
+          A private streaming space for you and your family. Browse thousands of
           titles, pick up right where you left off, and never argue about whose
           turn it is to pick again.
         </p>
@@ -182,14 +182,14 @@ export default function LandingPage() {
           ].map(({ icon: Icon, label }) => (
             <div
               key={label}
-              className="flex items-center gap-2 text-xs px-3.5 py-2 rounded-full"
+              className="flex items-center gap-2 text-sm px-3.5 py-2 rounded-full"
               style={{
                 color: 'var(--c-sub)',
                 background: 'var(--c-surface)',
                 border: '1px solid var(--c-border)',
               }}
             >
-              <Icon size={13} style={{ color: 'var(--c-accent)' }} />
+              <Icon size={14} style={{ color: 'var(--c-accent)' }} />
               {label}
             </div>
           ))}
@@ -200,10 +200,10 @@ export default function LandingPage() {
       <section className="relative z-10 px-5 sm:px-8 md:px-16 py-24 max-w-6xl mx-auto">
         <div className="text-center mb-16 animate-fade-in">
           <p
-            className="text-xs font-bold tracking-[0.3em] uppercase mb-3"
+            className="text-sm font-bold tracking-[0.2em] uppercase mb-3"
             style={{ color: 'var(--c-accent)' }}
           >
-            Built for movie nights
+            Built for movie nights and movie buffs
           </p>
           <h2
             className="font-bold leading-tight max-w-2xl mx-auto text-balance"
