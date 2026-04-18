@@ -64,7 +64,7 @@ app.include_router(tmdb_router, prefix=API_PREFIX)
 # ── Health Check ──────────────────────────────────────────────────
 @app.get("/", tags=["Root / Home"])
 def root():
-    return {"message": "Streamer API's are running. Got to /docs for more info."}
+    return {"message": "Streamer API's are running. Go to /docs for more info."}
 
 
 # ── Health Check ──────────────────────────────────────────────────
