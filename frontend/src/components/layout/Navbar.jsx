@@ -79,9 +79,10 @@ export default function Navbar() {
     }
   };
 
-  const isHome = location.pathname === '/home';
-  // Home page: transparent at top, glass when scrolled. Other pages: always glass.
-  const showBlur = scrolled || !isHome;
+  // Home page & Detail page: transparent at top, glass when scrolled.
+  // Other pages: always glass.
+  const isHomeOrDetail = location.pathname === '/home' || location.pathname.includes('/tv/') || location.pathname.includes('/movie/');
+  const showBlur = scrolled || !isHomeOrDetail;
 
   return (
     <>
@@ -89,8 +90,8 @@ export default function Navbar() {
         className="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
         style={{
           background: showBlur ? 'rgba(10, 10, 10, 0.85)' : 'transparent',
-          backdropFilter: showBlur ? 'blur(1px) saturate(1.4)' : 'none',
-          WebkitBackdropFilter: showBlur ? 'blur(24px) saturate(1.4)' : 'none',
+          backdropFilter: showBlur ? 'blur(2px) saturate(1.4)' : 'none',
+          WebkitBackdropFilter: showBlur ? 'blur(2px) saturate(1.4)' : 'none',
           borderBottom: showBlur
             ? '1px solid var(--c-border)'
             : '1px solid transparent',
