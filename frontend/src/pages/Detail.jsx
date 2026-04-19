@@ -115,12 +115,8 @@ export default function DetailPage() {
 
   const title = detail.title || detail.name;
   const year = (detail.release_date || detail.first_air_date || '').split('-')[0];
-  const runtime = detail.runtime
-    ? `${Math.floor(detail.runtime / 60)}h ${detail.runtime % 60}m`
-    : null;
-  const seasons = detail.number_of_seasons
-    ? `${detail.number_of_seasons} Season${detail.number_of_seasons > 1 ? 's' : ''}`
-    : null;
+  const runtime = detail.runtime ? `${Math.floor(detail.runtime / 60)}h ${detail.runtime % 60}m` : null;
+  const seasons = detail.number_of_seasons ? `${detail.number_of_seasons} Season${detail.number_of_seasons > 1 ? 's' : ''}` : null;
   const rating = detail.vote_average ? detail.vote_average.toFixed(1) : null;
   const cast = detail.credits?.cast?.slice(0, 12) || [];
   const similar = detail.similar?.results?.slice(0, 14) || [];
@@ -128,7 +124,7 @@ export default function DetailPage() {
   return (
     <div className="page-enter -mt-16">
       {/* ═══ Backdrop Hero ═══════════════════════════════════ */}
-      <div className="relative h-[70vh] min-h-[500px]">
+      <div className="relative h-[70vh] min-h-[700px]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -155,10 +151,10 @@ export default function DetailPage() {
       </div>
 
       {/* ═══ Content ═════════════════════════════════════════ */}
-      <div className="relative -mt-56 sm:-mt-64 z-10 px-4 md:px-12 max-w-[1400px] mx-auto pb-16">
+      <div className="relative sm:-mt-64 z-10 px-4 md:px-12 max-w-[1400px] mx-auto pb-16">
         <div className="flex flex-col md:flex-row gap-8 md:gap-10">
           {/* Poster */}
-          <div className="shrink-0 hidden md:block">
+          <div className="shrink-0 hidden md:block -mt-56">
             <img
               src={getPosterUrl(detail.poster_path, 'w500')}
               alt={title}
@@ -171,7 +167,7 @@ export default function DetailPage() {
           </div>
 
           {/* Info */}
-          <div className="flex-1 min-w-0 animate-fade-in-up stagger-1">
+          <div className="flex-1 min-w-0 animate-fade-in-up stagger-1 -mt-56">
             <div className="flex items-center gap-2 mb-3">
               <span
                 className="inline-flex items-center px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-widest"
